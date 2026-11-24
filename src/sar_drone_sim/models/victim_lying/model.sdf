@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="victim_lying">
+    <static>true</static>
+    <link name="body">
+      <pose>0 0 0 0 0 0</pose>
+
+      <collision name="body_collision">
+        <pose>0 0 0.12 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>1.75 0.55 0.24</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <!-- Head (~37.0 C = 310.15 K) -->
+      <visual name="head_visual">
+        <pose>0.72 0 0.13 0 0 0</pose>
+        <geometry>
+          <sphere>
+            <radius>0.11</radius>
+          </sphere>
+        </geometry>
+        <material>
+          <ambient>0.82 0.65 0.52 1</ambient>
+          <diffuse>0.86 0.68 0.55 1</diffuse>
+        </material>
+        <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal">
+          <temperature>310.15</temperature>
+        </plugin>
+      </visual>
+
+      <!-- Neck (~36.8 C = 309.95 K) -->
+      <visual name="neck_visual">
+        <pose>0.58 0 0.12 0 1.5708 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.055</radius>
+            <length>0.09</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.82 0.65 0.52 1</ambient>
+          <diffuse>0.86 0.68 0.55 1</diffuse>
+        </material>
+        <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal">
+          <temperature>309.95</temperature>
+        </plugin>
+      </visual>
+
+      <!-- Torso / Shirt (~36.2 C = 309.35 K) -->
+      <visual name="torso_visual">
+        <pose>0.26 0 0.13 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.52 0.34 0.20</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.75 0.18 0.15 1</ambient>
+          <diffuse>0.85 0.22 0.18 1</diffuse>
+        </material>
+        <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal">
+          <temperature>309.35</temperature>
+        </plugin>
+      </visual>
+
+      <!-- Pelvis (~36.0 C = 309.15 K) -->
+      <visual name="pelvis_visual">
+        <pose>-0.06 0 0.12 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.18 0.30 0.18</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.18 0.24 0.36 1</ambient>
+          <diffuse>0.22 0.30 0.44 1</diffuse>
+        </material>
+        <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal">
+          <temperature>309.15</temperature>
+        </plugin>
+      </visual>
+
+      <!-- Left Arm (~35.0 C = 308.15 K) -->
+      <visual name="left_arm_visual">
+        <pose>0.22 0.23 0.10 0 1.5708 0.22</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>0.54</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.75 0.18 0.15 1</ambient>
+          <diffuse>0.85 0.22 0.18 1</diffuse>
+        </material>
+        <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal">
+          <temperature>308.15</temperature>
+        </plugin>
+      </visual>
+
+      <!-- Right Arm (~35.0 C = 308.15 K) -->
+      <visual name="right_arm_visual">
+        <pose>0.28 -0.24 0.10 0 1.5708 -0.35</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>0.54</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.75 0.18 0.15 1</ambient>
+          <diffuse>0.85 0.22 0.18 1</diffuse>
+        </material>
+        <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal">
+          <temperature>308.15</temperature>
+        </plugin>
+      </visual>
+
+      <!-- Left Leg (~35.0 C = 308.15 K) -->
+      <visual name="left_leg_visual">
+        <pose>-0.48 0.10 0.10 0 1.5708 -0.08</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.068</radius>
+            <length>0.76</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.18 0.24 0.36 1</ambient>
+          <diffuse>0.22 0.30 0.44 1</diffuse>
+        </material>
+        <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal">
+          <temperature>308.15</temperature>
+        </plugin>
+      </visual>
+
+      <!-- Right Leg (~35.0 C = 308.15 K) -->
+      <visual name="right_leg_visual">
+        <pose>-0.48 -0.11 0.10 0 1.5708 0.12</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.068</radius>
+            <length>0.76</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.18 0.24 0.36 1</ambient>
+          <diffuse>0.22 0.30 0.44 1</diffuse>
+        </material>
+        <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal">
+          <temperature>308.15</temperature>
+        </plugin>
+      </visual>
+    </link>
+  </model>
+</sdf>

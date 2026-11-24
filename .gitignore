@@ -1,0 +1,28 @@
+# ROS 2 / colcon build artifacts
+build/
+install/
+log/
+
+# Python caches & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+
+# Editor & IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Gazebo / ROS temporary logs
+*.log
+*.bag
+.ros/

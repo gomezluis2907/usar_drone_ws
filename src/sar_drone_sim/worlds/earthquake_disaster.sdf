@@ -1,0 +1,485 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <world name="earthquake_disaster">
+    <physics name="4ms" type="ignored">
+      <max_step_size>0.004</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <scene>
+      <ambient>0.45 0.43 0.40 1</ambient>
+      <background>0.55 0.58 0.62 1</background>
+      <shadows>true</shadows>
+    </scene>
+
+    <atmosphere type="adiabatic">
+      <temperature>291.15</temperature>
+      <temperature_gradient>-0.0065</temperature_gradient>
+    </atmosphere>
+
+    <light type="directional" name="post_quake_sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 25 0 0 0</pose>
+      <diffuse>0.85 0.80 0.72 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.45 0.25 -0.85</direction>
+    </light>
+
+    <!-- Ground plane modeled as a solid box (required for Ogre2 thermal sensor accuracy) -->
+    <model name="disaster_ground">
+      <static>true</static>
+      <pose>0 0 -0.1 0 0 0</pose>
+      <link name="ground_link">
+        <collision name="ground_collision">
+          <geometry>
+            <box>
+              <size>120 120 0.2</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="ground_visual">
+          <geometry>
+            <box>
+              <size>120 120 0.2</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.26 0.26 0.25 1</ambient>
+            <diffuse>0.32 0.31 0.29 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal">
+            <temperature>290.15</temperature>
+          </plugin>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Central Takeoff Helipad at (0, 0) -->
+    <model name="takeoff_helipad">
+      <static>true</static>
+      <pose>0 0 0.005 0 0 0</pose>
+      <link name="pad_link">
+        <collision name="pad_collision">
+          <geometry>
+            <box>
+              <size>2.6 2.6 0.01</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="pad_base">
+          <geometry>
+            <box>
+              <size>2.6 2.6 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.18 0.19 0.21 1</ambient>
+            <diffuse>0.22 0.23 0.26 1</diffuse>
+          </material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal">
+            <temperature>290.65</temperature>
+          </plugin>
+        </visual>
+        <visual name="pad_ring_n">
+          <pose>1.15 0 0.006 0 0 0</pose>
+          <geometry><box><size>0.12 2.42 0.002</size></box></geometry>
+          <material><ambient>0.9 0.7 0.05 1</ambient><diffuse>0.95 0.75 0.05 1</diffuse></material>
+        </visual>
+        <visual name="pad_ring_s">
+          <pose>-1.15 0 0.006 0 0 0</pose>
+          <geometry><box><size>0.12 2.42 0.002</size></box></geometry>
+          <material><ambient>0.9 0.7 0.05 1</ambient><diffuse>0.95 0.75 0.05 1</diffuse></material>
+        </visual>
+        <visual name="pad_ring_e">
+          <pose>0 1.15 0.006 0 0 0</pose>
+          <geometry><box><size>2.18 0.12 0.002</size></box></geometry>
+          <material><ambient>0.9 0.7 0.05 1</ambient><diffuse>0.95 0.75 0.05 1</diffuse></material>
+        </visual>
+        <visual name="pad_ring_w">
+          <pose>0 -1.15 0.006 0 0 0</pose>
+          <geometry><box><size>2.18 0.12 0.002</size></box></geometry>
+          <material><ambient>0.9 0.7 0.05 1</ambient><diffuse>0.95 0.75 0.05 1</diffuse></material>
+        </visual>
+        <visual name="pad_h_left">
+          <pose>0 0.35 0.006 0 0 0</pose>
+          <geometry><box><size>1.1 0.16 0.002</size></box></geometry>
+          <material><ambient>0.9 0.9 0.9 1</ambient><diffuse>0.95 0.95 0.95 1</diffuse></material>
+        </visual>
+        <visual name="pad_h_right">
+          <pose>0 -0.35 0.006 0 0 0</pose>
+          <geometry><box><size>1.1 0.16 0.002</size></box></geometry>
+          <material><ambient>0.9 0.9 0.9 1</ambient><diffuse>0.95 0.95 0.95 1</diffuse></material>
+        </visual>
+        <visual name="pad_h_cross">
+          <pose>0 0 0.006 0 0 0</pose>
+          <geometry><box><size>0.18 0.7 0.002</size></box></geometry>
+          <material><ambient>0.9 0.9 0.9 1</ambient><diffuse>0.95 0.95 0.95 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ================================================================
+         BUILDING A (NE, x=10..20, y=5..15): Collapsed 3-story Office Block
+         ================================================================ -->
+    <model name="collapsed_building_a">
+      <static>true</static>
+      <link name="structure">
+        <!-- Intact North-East back wall -->
+        <collision name="wall_n_col"><pose>15 15 3.5 0 0 0</pose><geometry><box><size>10 0.4 7.0</size></box></geometry></collision>
+        <visual name="wall_n_vis">
+          <pose>15 15 3.5 0 0 0</pose><geometry><box><size>10 0.4 7.0</size></box></geometry>
+          <material><ambient>0.46 0.44 0.41 1</ambient><diffuse>0.54 0.51 0.48 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+
+        <!-- East sheared wall -->
+        <collision name="wall_e_col"><pose>20 10 2.8 0 0 0</pose><geometry><box><size>0.4 10 5.6</size></box></geometry></collision>
+        <visual name="wall_e_vis">
+          <pose>20 10 2.8 0 0 0</pose><geometry><box><size>0.4 10 5.6</size></box></geometry>
+          <material><ambient>0.42 0.40 0.38 1</ambient><diffuse>0.50 0.48 0.45 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+
+        <!-- Fractured West wall segment -->
+        <collision name="wall_w_col"><pose>10 11.5 2.0 0 0.08 0</pose><geometry><box><size>0.4 6.5 4.0</size></box></geometry></collision>
+        <visual name="wall_w_vis">
+          <pose>10 11.5 2.0 0 0.08 0</pose><geometry><box><size>0.4 6.5 4.0</size></box></geometry>
+          <material><ambient>0.48 0.45 0.42 1</ambient><diffuse>0.56 0.53 0.50 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+
+        <!-- Collapsed South facade base (victim_2 sits near y=5.4, x=11.8) -->
+        <collision name="wall_s_base_col"><pose>15.5 6.8 0.9 0.12 0 0</pose><geometry><box><size>7.5 0.45 1.8</size></box></geometry></collision>
+        <visual name="wall_s_base_vis">
+          <pose>15.5 6.8 0.9 0.12 0 0</pose><geometry><box><size>7.5 0.45 1.8</size></box></geometry>
+          <material><ambient>0.44 0.42 0.39 1</ambient><diffuse>0.52 0.50 0.46 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+
+        <!-- Massive tilted collapsed roof slab -->
+        <collision name="tilted_roof_col"><pose>15.2 10.5 3.1 0.46 0.10 0</pose><geometry><box><size>9.4 9.0 0.35</size></box></geometry></collision>
+        <visual name="tilted_roof_vis">
+          <pose>15.2 10.5 3.1 0.46 0.10 0</pose><geometry><box><size>9.4 9.0 0.35</size></box></geometry>
+          <material><ambient>0.38 0.36 0.35 1</ambient><diffuse>0.46 0.44 0.42 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.65</temperature></plugin>
+        </visual>
+
+        <!-- Collapsed 2nd floor mid-slab -->
+        <collision name="mid_slab_col"><pose>14.8 11.2 1.6 0.28 -0.06 0</pose><geometry><box><size>8.5 6.8 0.28</size></box></geometry></collision>
+        <visual name="mid_slab_vis">
+          <pose>14.8 11.2 1.6 0.28 -0.06 0</pose><geometry><box><size>8.5 6.8 0.28</size></box></geometry>
+          <material><ambient>0.40 0.39 0.37 1</ambient><diffuse>0.48 0.47 0.44 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+
+        <!-- Fallen corner column + steel I-beam -->
+        <collision name="fallen_col_a"><pose>10.5 6.2 0.45 0.2 1.25 0.3</pose><geometry><box><size>0.45 0.45 4.2</size></box></geometry></collision>
+        <visual name="fallen_col_a_vis">
+          <pose>10.5 6.2 0.45 0.2 1.25 0.3</pose><geometry><box><size>0.45 0.45 4.2</size></box></geometry>
+          <material><ambient>0.45 0.44 0.42 1</ambient><diffuse>0.52 0.51 0.48 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>290.65</temperature></plugin>
+        </visual>
+        <visual name="rebar_beam_a">
+          <pose>12.5 5.2 1.1 0.4 0.8 0.2</pose><geometry><box><size>0.12 0.12 3.8</size></box></geometry>
+          <material><ambient>0.28 0.18 0.12 1</ambient><diffuse>0.36 0.22 0.15 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ================================================================
+         BUILDING B (NW, x=8..18, y=-15..-5): Damaged Brick/Concrete Block
+         ================================================================ -->
+    <model name="collapsed_building_b">
+      <static>true</static>
+      <link name="structure">
+        <!-- South back wall -->
+        <collision name="b_wall_s_col"><pose>13 -15 3.2 0 0 0</pose><geometry><box><size>10 0.4 6.4</size></box></geometry></collision>
+        <visual name="b_wall_s_vis">
+          <pose>13 -15 3.2 0 0 0</pose><geometry><box><size>10 0.4 6.4</size></box></geometry>
+          <material><ambient>0.48 0.32 0.26 1</ambient><diffuse>0.56 0.38 0.30 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+
+        <!-- West wall -->
+        <collision name="b_wall_w_col"><pose>8 -10 2.5 0 -0.05 0</pose><geometry><box><size>0.4 10 5.0</size></box></geometry></collision>
+        <visual name="b_wall_w_vis">
+          <pose>8 -10 2.5 0 -0.05 0</pose><geometry><box><size>0.4 10 5.0</size></box></geometry>
+          <material><ambient>0.48 0.32 0.26 1</ambient><diffuse>0.56 0.38 0.30 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+
+        <!-- East partial wall -->
+        <collision name="b_wall_e_col"><pose>18 -11.5 2.0 0 0 0</pose><geometry><box><size>0.4 7.0 4.0</size></box></geometry></collision>
+        <visual name="b_wall_e_vis">
+          <pose>18 -11.5 2.0 0 0 0</pose><geometry><box><size>0.4 7.0 4.0</size></box></geometry>
+          <material><ambient>0.44 0.42 0.39 1</ambient><diffuse>0.52 0.49 0.46 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+
+        <!-- Leaning survival-void concrete panel near victim_3 -->
+        <collision name="b_leaning_panel_col"><pose>13.0 -8.2 1.6 -0.62 0 0.12</pose><geometry><box><size>7.0 0.32 4.2</size></box></geometry></collision>
+        <visual name="b_leaning_panel_vis">
+          <pose>13.0 -8.2 1.6 -0.62 0 0.12</pose><geometry><box><size>7.0 0.32 4.2</size></box></geometry>
+          <material><ambient>0.42 0.40 0.38 1</ambient><diffuse>0.50 0.48 0.45 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+
+        <!-- Collapsed roof section -->
+        <collision name="b_roof_col"><pose>13.0 -12.0 3.2 -0.32 0.12 0</pose><geometry><box><size>9.0 6.5 0.32</size></box></geometry></collision>
+        <visual name="b_roof_vis">
+          <pose>13.0 -12.0 3.2 -0.32 0.12 0</pose><geometry><box><size>9.0 6.5 0.32</size></box></geometry>
+          <material><ambient>0.36 0.35 0.34 1</ambient><diffuse>0.44 0.43 0.41 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ================================================================
+         BUILDING C (East, x=21..32, y=-6..6): Pancaked Multi-Slab Structure
+         ================================================================ -->
+    <model name="collapsed_building_c">
+      <static>true</static>
+      <link name="structure">
+        <!-- Lower slab (victim_4 rests near 21.5, -1.0, z=0.85 on west slope) -->
+        <collision name="c_slab_1_col"><pose>24.5 0 0.65 0 -0.18 0</pose><geometry><box><size>8.5 9.5 0.34</size></box></geometry></collision>
+        <visual name="c_slab_1_vis">
+          <pose>24.5 0 0.65 0 -0.18 0</pose><geometry><box><size>8.5 9.5 0.34</size></box></geometry>
+          <material><ambient>0.44 0.43 0.41 1</ambient><diffuse>0.52 0.50 0.47 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+
+        <!-- Second pancaked slab shifted east -->
+        <collision name="c_slab_2_col"><pose>26.2 0.5 2.0 0.08 -0.22 0.05</pose><geometry><box><size>7.8 8.8 0.34</size></box></geometry></collision>
+        <visual name="c_slab_2_vis">
+          <pose>26.2 0.5 2.0 0.08 -0.22 0.05</pose><geometry><box><size>7.8 8.8 0.34</size></box></geometry>
+          <material><ambient>0.38 0.37 0.36 1</ambient><diffuse>0.46 0.45 0.43 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.65</temperature></plugin>
+        </visual>
+
+        <!-- Third top slab -->
+        <collision name="c_slab_3_col"><pose>27.8 -0.2 3.4 -0.10 -0.14 -0.05</pose><geometry><box><size>7.0 8.0 0.30</size></box></geometry></collision>
+        <visual name="c_slab_3_vis">
+          <pose>27.8 -0.2 3.4 -0.10 -0.14 -0.05</pose><geometry><box><size>7.0 8.0 0.30</size></box></geometry>
+          <material><ambient>0.41 0.40 0.38 1</ambient><diffuse>0.49 0.47 0.45 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>292.15</temperature></plugin>
+        </visual>
+
+        <!-- Sheared East rear tower -->
+        <collision name="c_tower_col"><pose>30.5 0 3.0 0 0 0</pose><geometry><box><size>2.2 10.0 6.0</size></box></geometry></collision>
+        <visual name="c_tower_vis">
+          <pose>30.5 0 3.0 0 0 0</pose><geometry><box><size>2.2 10.0 6.0</size></box></geometry>
+          <material><ambient>0.46 0.45 0.43 1</ambient><diffuse>0.54 0.52 0.50 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ================================================================
+         SOUTH / WEST RUINS & FALLEN STREET INFRASTRUCTURE
+         ================================================================ -->
+    <model name="south_ruins">
+      <static>true</static>
+      <link name="ruins">
+        <!-- Crumbled boundary wall near victim_5 (-5.0, 7.2) -->
+        <collision name="s_wall_1_col"><pose>-6.2 8.8 1.3 0 0 0.25</pose><geometry><box><size>5.5 0.4 2.6</size></box></geometry></collision>
+        <visual name="s_wall_1_vis">
+          <pose>-6.2 8.8 1.3 0 0 0.25</pose><geometry><box><size>5.5 0.4 2.6</size></box></geometry>
+          <material><ambient>0.45 0.42 0.38 1</ambient><diffuse>0.53 0.49 0.45 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+
+        <!-- Leaning broken wall segment -->
+        <collision name="s_wall_2_col"><pose>-9.2 6.5 1.1 0.38 0 -0.2</pose><geometry><box><size>0.4 4.2 2.6</size></box></geometry></collision>
+        <visual name="s_wall_2_vis">
+          <pose>-9.2 6.5 1.1 0.38 0 -0.2</pose><geometry><box><size>0.4 4.2 2.6</size></box></geometry>
+          <material><ambient>0.45 0.42 0.38 1</ambient><diffuse>0.53 0.49 0.45 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+
+        <!-- SW broken corner structure -->
+        <collision name="sw_wall_col"><pose>-7.5 -9.0 1.8 0 0 -0.15</pose><geometry><box><size>6.0 0.45 3.6</size></box></geometry></collision>
+        <visual name="sw_wall_vis">
+          <pose>-7.5 -9.0 1.8 0 0 -0.15</pose><geometry><box><size>6.0 0.45 3.6</size></box></geometry>
+          <material><ambient>0.48 0.35 0.28 1</ambient><diffuse>0.56 0.42 0.34 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+
+        <!-- Fallen concrete light pole across street -->
+        <collision name="fallen_pole_col"><pose>8.2 1.8 0.14 0.1 1.54 0.55</pose><geometry><cylinder><radius>0.12</radius><length>5.8</length></cylinder></geometry></collision>
+        <visual name="fallen_pole_vis">
+          <pose>8.2 1.8 0.14 0.1 1.54 0.55</pose><geometry><cylinder><radius>0.12</radius><length>5.8</length></cylinder></geometry>
+          <material><ambient>0.38 0.38 0.38 1</ambient><diffuse>0.48 0.48 0.48 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>290.65</temperature></plugin>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ================================================================
+         SCATTERED CONCRETE RUBBLE CLUSTERS
+         ================================================================ -->
+    <model name="rubble_clusters">
+      <static>true</static>
+      <link name="rubble">
+        <!-- Rubble near victim_1 (around x=5..7, y=-1.5..2.0) -->
+        <collision name="r1_col"><pose>6.9 -1.1 0.30 0.15 -0.2 0.4</pose><geometry><box><size>1.1 0.8 0.6</size></box></geometry></collision>
+        <visual name="r1_vis">
+          <pose>6.9 -1.1 0.30 0.15 -0.2 0.4</pose><geometry><box><size>1.1 0.8 0.6</size></box></geometry>
+          <material><ambient>0.42 0.40 0.38 1</ambient><diffuse>0.50 0.48 0.45 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>290.65</temperature></plugin>
+        </visual>
+
+        <collision name="r2_col"><pose>4.6 1.6 0.22 -0.2 0.1 0.8</pose><geometry><box><size>0.9 0.7 0.45</size></box></geometry></collision>
+        <visual name="r2_vis">
+          <pose>4.6 1.6 0.22 -0.2 0.1 0.8</pose><geometry><box><size>0.9 0.7 0.45</size></box></geometry>
+          <material><ambient>0.45 0.43 0.40 1</ambient><diffuse>0.53 0.50 0.47 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>290.65</temperature></plugin>
+        </visual>
+
+        <collision name="r3_col"><pose>7.4 1.5 0.40 0.3 0.25 -0.4</pose><geometry><box><size>1.4 0.9 0.75</size></box></geometry></collision>
+        <visual name="r3_vis">
+          <pose>7.4 1.5 0.40 0.3 0.25 -0.4</pose><geometry><box><size>1.4 0.9 0.75</size></box></geometry>
+          <material><ambient>0.39 0.38 0.36 1</ambient><diffuse>0.47 0.45 0.43 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+
+        <!-- Rubble near Building A & B -->
+        <collision name="r4_col"><pose>10.2 4.3 0.35 0.1 -0.15 0.6</pose><geometry><box><size>1.5 1.1 0.7</size></box></geometry></collision>
+        <visual name="r4_vis">
+          <pose>10.2 4.3 0.35 0.1 -0.15 0.6</pose><geometry><box><size>1.5 1.1 0.7</size></box></geometry>
+          <material><ambient>0.43 0.41 0.39 1</ambient><diffuse>0.51 0.49 0.46 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+
+        <collision name="r5_col"><pose>9.8 -5.4 0.32 -0.25 0.12 -0.5</pose><geometry><box><size>1.6 1.0 0.65</size></box></geometry></collision>
+        <visual name="r5_vis">
+          <pose>9.8 -5.4 0.32 -0.25 0.12 -0.5</pose><geometry><box><size>1.6 1.0 0.65</size></box></geometry>
+          <material><ambient>0.46 0.35 0.29 1</ambient><diffuse>0.55 0.42 0.35 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+
+        <collision name="r6_col"><pose>18.5 -3.6 0.45 0.2 -0.3 0.3</pose><geometry><box><size>1.8 1.3 0.9</size></box></geometry></collision>
+        <visual name="r6_vis">
+          <pose>18.5 -3.6 0.45 0.2 -0.3 0.3</pose><geometry><box><size>1.8 1.3 0.9</size></box></geometry>
+          <material><ambient>0.40 0.39 0.37 1</ambient><diffuse>0.48 0.47 0.44 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+
+        <collision name="r7_col"><pose>-3.2 5.4 0.25 0.15 0.2 -0.7</pose><geometry><box><size>1.2 0.8 0.5</size></box></geometry></collision>
+        <visual name="r7_vis">
+          <pose>-3.2 5.4 0.25 0.15 0.2 -0.7</pose><geometry><box><size>1.2 0.8 0.5</size></box></geometry>
+          <material><ambient>0.44 0.42 0.39 1</ambient><diffuse>0.52 0.49 0.46 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>290.65</temperature></plugin>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ================================================================
+         THERMAL DISTRACTORS (Cooling Car + Electrical/Fire Hotspot)
+         ================================================================ -->
+    <!-- Damaged overturned car: chassis ~19C, cooling hood ~28C (below human 32.5C) -->
+    <model name="damaged_car">
+      <static>true</static>
+      <pose>13.5 -1.5 0.65 0.22 0.08 -0.65</pose>
+      <link name="car_link">
+        <collision name="car_col"><geometry><box><size>4.0 1.75 1.1</size></box></geometry></collision>
+        <visual name="car_body_vis">
+          <geometry><box><size>4.0 1.75 0.85</size></box></geometry>
+          <material><ambient>0.22 0.28 0.36 1</ambient><diffuse>0.28 0.35 0.45 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>292.15</temperature></plugin>
+        </visual>
+        <visual name="car_cabin_vis">
+          <pose>-0.25 0 0.62 0 0 0</pose>
+          <geometry><box><size>1.9 1.55 0.55</size></box></geometry>
+          <material><ambient>0.16 0.20 0.26 1</ambient><diffuse>0.20 0.25 0.32 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>292.15</temperature></plugin>
+        </visual>
+        <visual name="car_hood_warm_vis">
+          <pose>1.35 0 0.44 0 0 0</pose>
+          <geometry><box><size>1.1 1.45 0.08</size></box></geometry>
+          <material><ambient>0.20 0.24 0.30 1</ambient><diffuse>0.25 0.30 0.38 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>301.15</temperature></plugin>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Smoldering electrical/fire hotspot: ~75C (above human 41.5C) -->
+    <model name="thermal_hotspot_fire">
+      <static>true</static>
+      <pose>17.5 2.5 0.15 0 0 0.3</pose>
+      <link name="hotspot_link">
+        <collision name="hotspot_col"><geometry><box><size>0.55 0.55 0.30</size></box></geometry></collision>
+        <visual name="hotspot_vis">
+          <geometry><box><size>0.55 0.55 0.30</size></box></geometry>
+          <material>
+            <ambient>0.9 0.25 0.05 1</ambient>
+            <diffuse>0.95 0.35 0.05 1</diffuse>
+            <emissive>0.85 0.25 0.02 1</emissive>
+          </material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>348.15</temperature></plugin>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ================================================================
+         5 HUMAN SURVIVORS (~35 - 37 C)
+         ================================================================ -->
+    <!-- Victim 1: Ahead of takeoff pad near street rubble -->
+    <include>
+      <name>victim_1</name>
+      <uri>model://victim_lying</uri>
+      <pose>5.8 0.3 0.02 0 0 0.4</pose>
+    </include>
+
+    <!-- Victim 2: Seated against collapsed Building A base -->
+    <include>
+      <name>victim_2</name>
+      <uri>model://victim_sitting</uri>
+      <pose>11.8 5.4 0.02 0 0 -1.2</pose>
+    </include>
+
+    <!-- Victim 3: Lying beside Building B survival-void slab -->
+    <include>
+      <name>victim_3</name>
+      <uri>model://victim_lying</uri>
+      <pose>11.5 -6.8 0.02 0 0 1.9</pose>
+    </include>
+
+    <!-- Victim 4: Lying on top of Building C lower tilted slab -->
+    <include>
+      <name>victim_4</name>
+      <uri>model://victim_lying</uri>
+      <pose>21.5 -1.0 0.28 0 -0.18 0.2</pose>
+    </include>
+
+    <!-- Victim 5: Seated near South ruins -->
+    <include>
+      <name>victim_5</name>
+      <uri>model://victim_sitting</uri>
+      <pose>-5.0 7.2 0.02 0 0 -0.8</pose>
+    </include>
+
+    <!-- ================================================================
+         SAR QUADCOPTER DRONE ON HELIPAD
+         ================================================================ -->
+    <include>
+      <name>sar_drone</name>
+      <uri>model://sar_drone</uri>
+      <pose>0 0 0.14 0 0 0</pose>
+    </include>
+  </world>
+</sdf>
