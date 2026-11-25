@@ -16,12 +16,16 @@ def generate_launch_description():
     world_path = os.path.join(pkg_sar, 'worlds', 'earthquake_disaster.sdf')
     models_path = os.path.join(pkg_sar, 'models')
     bridge_config = os.path.join(pkg_sar, 'config', 'ros_gz_bridge.yaml')
+    rviz_config = os.path.join(pkg_sar, 'config', 'usar_gcs.rviz')
 
     existing_gz_path = os.environ.get('GZ_SIM_RESOURCE_PATH', '')
     resource_path = f'{models_path}:{existing_gz_path}' if existing_gz_path else models_path
 
     headless = LaunchConfiguration('headless')
     show_window = LaunchConfiguration('show_window')
+    dual_windows = LaunchConfiguration('dual_windows')
+    rviz = LaunchConfiguration('rviz')
+    battery_drain_scale = LaunchConfiguration('battery_drain_scale')
 
     set_gz_resource = SetEnvironmentVariable(
         name='GZ_SIM_RESOURCE_PATH',
@@ -51,11 +55,39 @@ def generate_launch_description():
         output='screen',
     )
 
+    flight_manager = Node(
+        package='sar_drone_sim',
+        executable='flight_manager',
+        name='flight_manager',
+        parameters=[{'battery_drain_scale': battery_drain_scale}],
+        output='screen',
+    )
+
     thermal_detector = Node(
         package='sar_drone_sim',
         executable='thermal_detector',
         name='thermal_detector',
-        parameters=[{'show_window': show_window}],
+        parameters=[{'show_window': False}],
+        output='screen',
+    )
+
+    gcs_hud = Node(
+        package='sar_drone_sim',
+        executable='gcs_hud',
+        name='gcs_hud',
+        parameters=[{
+            'show_window': show_window,
+            'dual_windows': dual_windows,
+        }],
+        output='screen',
+    )
+
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        arguments=['-d', rviz_config],
+        condition=IfCondition(rviz),
         output='screen',
     )
 
@@ -68,11 +100,29 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'show_window',
             default_value='true',
-            description='Display OpenCV thermal + RGB operator HUD window.',
+            description='Display OpenCV USAR Ground Control Station HUD window(s).',
+        ),
+        DeclareLaunchArgument(
+            'dual_windows',
+            default_value='false',
+            description='Split GCS into separate Pilot FPV and Observer Thermal+Map windows.',
+        ),
+        DeclareLaunchArgument(
+            'rviz',
+            default_value='false',
+            description='Launch RViz2 3D tactical view.',
+        ),
+        DeclareLaunchArgument(
+            'battery_drain_scale',
+            default_value='1.5',
+            description='Battery discharge speed multiplier for demos.',
         ),
         set_gz_resource,
         gz_sim_gui,
         gz_sim_headless,
         bridge,
+        flight_manager,
         thermal_detector,
+        gcs_hud,
+        rviz_node,
     ])

@@ -12,6 +12,16 @@
     <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
       <render_engine>ogre2</render_engine>
     </plugin>
+    <plugin filename="gz-sim-particle-emitter-system" name="gz::sim::systems::ParticleEmitter"/>
+
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <world_frame_orientation>ENU</world_frame_orientation>
+      <latitude_deg>19.3320</latitude_deg>
+      <longitude_deg>-99.1870</longitude_deg>
+      <elevation>2240.0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
 
     <scene>
       <ambient>0.45 0.43 0.40 1</ambient>
@@ -417,7 +427,7 @@
       </link>
     </model>
 
-    <!-- Smoldering electrical/fire hotspot: ~75C (above human 41.5C) -->
+    <!-- Smoldering electrical/fire hotspot: ~75C (above human 41.5C) with smoke plume -->
     <model name="thermal_hotspot_fire">
       <static>true</static>
       <pose>17.5 2.5 0.15 0 0 0.3</pose>
@@ -432,6 +442,138 @@
           </material>
           <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>348.15</temperature></plugin>
         </visual>
+        <particle_emitter name="fire_smoke_emitter" type="box">
+          <pose>0 0 0.25 0 -1.5708 0</pose>
+          <emitting>true</emitting>
+          <size>0.45 0.45 0.1</size>
+          <particle_size>0.55 0.55 0.55</particle_size>
+          <lifetime>4.0</lifetime>
+          <min_velocity>0.45</min_velocity>
+          <max_velocity>0.95</max_velocity>
+          <scale_rate>0.35</scale_rate>
+          <rate>8</rate>
+          <material>
+            <diffuse>0.32 0.32 0.34</diffuse>
+            <specular>0.1 0.1 0.1</specular>
+          </material>
+          <color_start>0.28 0.28 0.30 0.65</color_start>
+          <color_end>0.65 0.65 0.68 0.0</color_end>
+        </particle_emitter>
+      </link>
+    </model>
+
+    <!-- ================================================================
+         SAFE PERIMETER USAR COMMAND POST (C20) & OVERHEAD CABLE HAZARD (C12)
+         ================================================================ -->
+    <model name="command_post_usar">
+      <static>true</static>
+      <pose>-4.8 -4.5 0 0 0 0.45</pose>
+      <link name="cp_link">
+        <!-- Canopy roof (SAR orange) -->
+        <collision name="cp_roof_col"><pose>0 0 2.15 0 0 0</pose><geometry><box><size>3.2 2.4 0.10</size></box></geometry></collision>
+        <visual name="cp_roof_vis">
+          <pose>0 0 2.15 0 0 0</pose><geometry><box><size>3.2 2.4 0.10</size></box></geometry>
+          <material><ambient>0.85 0.34 0.05 1</ambient><diffuse>0.95 0.40 0.08 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+        <!-- 4 Canopy poles -->
+        <visual name="cp_pole_1"><pose>1.45 1.05 1.05 0 0 0</pose><geometry><cylinder><radius>0.04</radius><length>2.1</length></cylinder></geometry><material><ambient>0.8 0.8 0.8 1</ambient><diffuse>0.9 0.9 0.9 1</diffuse></material><plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin></visual>
+        <visual name="cp_pole_2"><pose>1.45 -1.05 1.05 0 0 0</pose><geometry><cylinder><radius>0.04</radius><length>2.1</length></cylinder></geometry><material><ambient>0.8 0.8 0.8 1</ambient><diffuse>0.9 0.9 0.9 1</diffuse></material><plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin></visual>
+        <visual name="cp_pole_3"><pose>-1.45 1.05 1.05 0 0 0</pose><geometry><cylinder><radius>0.04</radius><length>2.1</length></cylinder></geometry><material><ambient>0.8 0.8 0.8 1</ambient><diffuse>0.9 0.9 0.9 1</diffuse></material><plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin></visual>
+        <visual name="cp_pole_4"><pose>-1.45 -1.05 1.05 0 0 0</pose><geometry><cylinder><radius>0.04</radius><length>2.1</length></cylinder></geometry><material><ambient>0.8 0.8 0.8 1</ambient><diffuse>0.9 0.9 0.9 1</diffuse></material><plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin></visual>
+        <!-- GCS table and dual monitors -->
+        <collision name="cp_table_col"><pose>0 0 0.42 0 0 0</pose><geometry><box><size>1.8 0.8 0.84</size></box></geometry></collision>
+        <visual name="cp_table_vis">
+          <pose>0 0 0.42 0 0 0</pose><geometry><box><size>1.8 0.8 0.84</size></box></geometry>
+          <material><ambient>0.22 0.24 0.27 1</ambient><diffuse>0.28 0.30 0.34 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+        <visual name="cp_screen_1">
+          <pose>-0.35 0.05 1.02 0 0 0</pose><geometry><box><size>0.55 0.05 0.36</size></box></geometry>
+          <material><ambient>0.08 0.12 0.18 1</ambient><diffuse>0.12 0.18 0.28 1</diffuse><emissive>0.05 0.22 0.32 1</emissive></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+        <visual name="cp_screen_2">
+          <pose>0.35 0.05 1.02 0 0 0</pose><geometry><box><size>0.55 0.05 0.36</size></box></geometry>
+          <material><ambient>0.08 0.12 0.18 1</ambient><diffuse>0.12 0.18 0.28 1</diffuse><emissive>0.28 0.12 0.04 1</emissive></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+        <!-- Telemetry mast / antenna -->
+        <visual name="cp_antenna_mast">
+          <pose>-1.55 1.15 1.85 0 0 0</pose><geometry><cylinder><radius>0.03</radius><length>3.7</length></cylinder></geometry>
+          <material><ambient>0.7 0.7 0.72 1</ambient><diffuse>0.82 0.82 0.85 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+        <visual name="cp_antenna_dish">
+          <pose>-1.55 1.15 3.65 0 0.25 0</pose><geometry><cylinder><radius>0.22</radius><length>0.06</length></cylinder></geometry>
+          <material><ambient>0.9 0.9 0.92 1</ambient><diffuse>0.95 0.95 0.98 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Perimeter safety cones around takeoff helipad -->
+    <model name="helipad_perimeter_cones">
+      <static>true</static>
+      <link name="cones_link">
+        <visual name="cone_1"><pose>2.0 2.0 0.22 0 0 0</pose><geometry><cone><radius>0.16</radius><length>0.44</length></cone></geometry><material><ambient>0.95 0.35 0.02 1</ambient><diffuse>0.98 0.42 0.04 1</diffuse></material><plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin></visual>
+        <visual name="cone_2"><pose>2.0 -2.0 0.22 0 0 0</pose><geometry><cone><radius>0.16</radius><length>0.44</length></cone></geometry><material><ambient>0.95 0.35 0.02 1</ambient><diffuse>0.98 0.42 0.04 1</diffuse></material><plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin></visual>
+        <visual name="cone_3"><pose>-2.0 2.0 0.22 0 0 0</pose><geometry><cone><radius>0.16</radius><length>0.44</length></cone></geometry><material><ambient>0.95 0.35 0.02 1</ambient><diffuse>0.98 0.42 0.04 1</diffuse></material><plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin></visual>
+        <visual name="cone_4"><pose>-2.0 -2.0 0.22 0 0 0</pose><geometry><cone><radius>0.16</radius><length>0.44</length></cone></geometry><material><ambient>0.95 0.35 0.02 1</ambient><diffuse>0.98 0.42 0.04 1</diffuse></material><plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>291.15</temperature></plugin></visual>
+      </link>
+    </model>
+
+    <!-- Overhead downed/sagging power cable hazard near Building A entrance -->
+    <model name="overhead_cable_hazard">
+      <static>true</static>
+      <link name="cable_link">
+        <collision name="pole_a_col"><pose>8.0 4.8 1.9 0.08 -0.06 0</pose><geometry><cylinder><radius>0.10</radius><length>3.8</length></cylinder></geometry></collision>
+        <visual name="pole_a_vis">
+          <pose>8.0 4.8 1.9 0.08 -0.06 0</pose><geometry><cylinder><radius>0.10</radius><length>3.8</length></cylinder></geometry>
+          <material><ambient>0.35 0.34 0.32 1</ambient><diffuse>0.44 0.42 0.40 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>290.65</temperature></plugin>
+        </visual>
+        <collision name="pole_b_col"><pose>8.0 10.5 1.9 -0.05 0.08 0</pose><geometry><cylinder><radius>0.10</radius><length>3.8</length></cylinder></geometry></collision>
+        <visual name="pole_b_vis">
+          <pose>8.0 10.5 1.9 -0.05 0.08 0</pose><geometry><cylinder><radius>0.10</radius><length>3.8</length></cylinder></geometry>
+          <material><ambient>0.35 0.34 0.32 1</ambient><diffuse>0.44 0.42 0.40 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>290.65</temperature></plugin>
+        </visual>
+        <visual name="cable_line_1">
+          <pose>8.0 7.65 3.45 1.5708 0 0</pose><geometry><cylinder><radius>0.018</radius><length>5.8</length></cylinder></geometry>
+          <material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>290.65</temperature></plugin>
+        </visual>
+        <visual name="cable_line_2">
+          <pose>8.12 7.65 3.25 1.5708 0 0</pose><geometry><cylinder><radius>0.018</radius><length>5.8</length></cylinder></geometry>
+          <material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material>
+          <plugin filename="gz-sim-thermal-system" name="gz::sim::systems::Thermal"><temperature>290.65</temperature></plugin>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Dust cloud near victim_3 (Building B) to demonstrate RGB occlusion vs Thermal penetration -->
+    <model name="rubble_dust_cloud">
+      <static>true</static>
+      <pose>11.2 -6.2 0.25 0 0 0</pose>
+      <link name="dust_link">
+        <particle_emitter name="rubble_dust_emitter" type="box">
+          <pose>0 0 0 0 -1.5708 0</pose>
+          <emitting>true</emitting>
+          <size>1.4 1.4 0.2</size>
+          <particle_size>0.9 0.9 0.9</particle_size>
+          <lifetime>4.5</lifetime>
+          <min_velocity>0.18</min_velocity>
+          <max_velocity>0.42</max_velocity>
+          <scale_rate>0.25</scale_rate>
+          <rate>7</rate>
+          <material>
+            <diffuse>0.68 0.64 0.56</diffuse>
+            <specular>0.05 0.05 0.05</specular>
+          </material>
+          <color_start>0.72 0.68 0.60 0.50</color_start>
+          <color_end>0.78 0.74 0.68 0.0</color_end>
+        </particle_emitter>
       </link>
     </model>
 

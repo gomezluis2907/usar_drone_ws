@@ -20,24 +20,26 @@ def collect_model_data_files():
 
 setup(
     name=package_name,
-    version='0.1.0',
+    version='0.2.0',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
         (os.path.join('share', package_name, 'worlds'), glob('worlds/*.sdf')),
-        (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
+        (os.path.join('share', package_name, 'config'), glob('config/*.yaml') + glob('config/*.rviz')),
     ] + collect_model_data_files(),
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='gomezluis2907',
     maintainer_email='gomezluis2907@local.dev',
-    description='Search-and-rescue drone simulation in an earthquake disaster world with thermal CV.',
+    description='Search-and-rescue USAR drone simulation aligned with UNAM Dron USAR ConOps.',
     license='Apache-2.0',
     entry_points={
         'console_scripts': [
+            'flight_manager = sar_drone_sim.flight_manager:main',
             'thermal_detector = sar_drone_sim.thermal_detector:main',
+            'gcs_hud = sar_drone_sim.gcs_hud:main',
             'keyboard_teleop = sar_drone_sim.keyboard_teleop:main',
         ],
     },

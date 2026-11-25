@@ -21,7 +21,7 @@
         <pose>0 0 -0.01 0 0 0</pose>
         <geometry>
           <box>
-            <size>0.42 0.42 0.19</size>
+            <size>0.56 0.56 0.19</size>
           </box>
         </geometry>
       </collision>
@@ -201,9 +201,113 @@
         </material>
       </visual>
 
-      <!-- Front gimbal / camera payload housing -->
+      <!-- Position & strobe navigation lights (C14) -->
+      <visual name="nav_light_port">
+        <pose>0.21 0.21 0.055 0 0 0</pose>
+        <geometry><sphere><radius>0.014</radius></sphere></geometry>
+        <material><ambient>0.9 0.1 0.1 1</ambient><diffuse>1.0 0.15 0.15 1</diffuse><emissive>0.95 0.1 0.1 1</emissive></material>
+      </visual>
+      <visual name="nav_light_starboard">
+        <pose>0.21 -0.21 0.055 0 0 0</pose>
+        <geometry><sphere><radius>0.014</radius></sphere></geometry>
+        <material><ambient>0.1 0.9 0.2 1</ambient><diffuse>0.15 1.0 0.25 1</diffuse><emissive>0.1 0.95 0.2 1</emissive></material>
+      </visual>
+      <visual name="nav_light_rear_l">
+        <pose>-0.21 0.21 0.055 0 0 0</pose>
+        <geometry><sphere><radius>0.012</radius></sphere></geometry>
+        <material><ambient>0.9 0.9 0.9 1</ambient><diffuse>1.0 1.0 1.0 1</diffuse><emissive>0.95 0.95 0.95 1</emissive></material>
+      </visual>
+      <visual name="nav_light_rear_r">
+        <pose>-0.21 -0.21 0.055 0 0 0</pose>
+        <geometry><sphere><radius>0.012</radius></sphere></geometry>
+        <material><ambient>0.9 0.9 0.9 1</ambient><diffuse>1.0 1.0 1.0 1</diffuse><emissive>0.95 0.95 0.95 1</emissive></material>
+      </visual>
+      <visual name="top_strobe_beacon">
+        <pose>0 0 0.072 0 0 0</pose>
+        <geometry><cylinder><radius>0.016</radius><length>0.022</length></cylinder></geometry>
+        <material><ambient>1.0 0.7 0.1 1</ambient><diffuse>1.0 0.8 0.2 1</diffuse><emissive>1.0 0.65 0.05 1</emissive></material>
+      </visual>
+
+      <!-- Octagonal Propeller Guards (C12) -->
+      <!-- Front-Right Guard (rotor_0: 0.18, -0.18) -->
+      <visual name="pg0_0"><pose>0.315 -0.180 0.04 0 0 1.5708</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.85 0.32 0.04 1</ambient><diffuse>0.95 0.38 0.04 1</diffuse></material></visual>
+      <visual name="pg0_1"><pose>0.275 -0.085 0.04 0 0 2.3562</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.85 0.32 0.04 1</ambient><diffuse>0.95 0.38 0.04 1</diffuse></material></visual>
+      <visual name="pg0_2"><pose>0.180 -0.045 0.04 0 0 3.1416</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.85 0.32 0.04 1</ambient><diffuse>0.95 0.38 0.04 1</diffuse></material></visual>
+      <visual name="pg0_3"><pose>0.085 -0.085 0.04 0 0 3.9270</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.85 0.32 0.04 1</ambient><diffuse>0.95 0.38 0.04 1</diffuse></material></visual>
+      <visual name="pg0_4"><pose>0.045 -0.180 0.04 0 0 4.7124</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.85 0.32 0.04 1</ambient><diffuse>0.95 0.38 0.04 1</diffuse></material></visual>
+      <visual name="pg0_5"><pose>0.085 -0.275 0.04 0 0 5.4978</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.85 0.32 0.04 1</ambient><diffuse>0.95 0.38 0.04 1</diffuse></material></visual>
+      <visual name="pg0_6"><pose>0.180 -0.315 0.04 0 0 0.0000</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.85 0.32 0.04 1</ambient><diffuse>0.95 0.38 0.04 1</diffuse></material></visual>
+      <visual name="pg0_7"><pose>0.275 -0.275 0.04 0 0 0.7854</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.85 0.32 0.04 1</ambient><diffuse>0.95 0.38 0.04 1</diffuse></material></visual>
+
+      <!-- Front-Left Guard (rotor_2: 0.18, 0.18) -->
+      <visual name="pg2_0"><pose>0.315 0.180 0.04 0 0 1.5708</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.85 0.32 0.04 1</ambient><diffuse>0.95 0.38 0.04 1</diffuse></material></visual>
+      <visual name="pg2_1"><pose>0.275 0.275 0.04 0 0 2.3562</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.85 0.32 0.04 1</ambient><diffuse>0.95 0.38 0.04 1</diffuse></material></visual>
+      <visual name="pg2_2"><pose>0.180 0.315 0.04 0 0 3.1416</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.85 0.32 0.04 1</ambient><diffuse>0.95 0.38 0.04 1</diffuse></material></visual>
+      <visual name="pg2_3"><pose>0.085 0.275 0.04 0 0 3.9270</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.85 0.32 0.04 1</ambient><diffuse>0.95 0.38 0.04 1</diffuse></material></visual>
+      <visual name="pg2_4"><pose>0.045 0.180 0.04 0 0 4.7124</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.85 0.32 0.04 1</ambient><diffuse>0.95 0.38 0.04 1</diffuse></material></visual>
+      <visual name="pg2_5"><pose>0.085 0.085 0.04 0 0 5.4978</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.85 0.32 0.04 1</ambient><diffuse>0.95 0.38 0.04 1</diffuse></material></visual>
+      <visual name="pg2_6"><pose>0.180 0.045 0.04 0 0 0.0000</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.85 0.32 0.04 1</ambient><diffuse>0.95 0.38 0.04 1</diffuse></material></visual>
+      <visual name="pg2_7"><pose>0.275 0.085 0.04 0 0 0.7854</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.85 0.32 0.04 1</ambient><diffuse>0.95 0.38 0.04 1</diffuse></material></visual>
+
+      <!-- Rear-Left Guard (rotor_1: -0.18, 0.18) -->
+      <visual name="pg1_0"><pose>-0.045 0.180 0.04 0 0 1.5708</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.16 0.17 0.19 1</ambient><diffuse>0.22 0.23 0.26 1</diffuse></material></visual>
+      <visual name="pg1_1"><pose>-0.085 0.275 0.04 0 0 2.3562</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.16 0.17 0.19 1</ambient><diffuse>0.22 0.23 0.26 1</diffuse></material></visual>
+      <visual name="pg1_2"><pose>-0.180 0.315 0.04 0 0 3.1416</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.16 0.17 0.19 1</ambient><diffuse>0.22 0.23 0.26 1</diffuse></material></visual>
+      <visual name="pg1_3"><pose>-0.275 0.275 0.04 0 0 3.9270</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.16 0.17 0.19 1</ambient><diffuse>0.22 0.23 0.26 1</diffuse></material></visual>
+      <visual name="pg1_4"><pose>-0.315 0.180 0.04 0 0 4.7124</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.16 0.17 0.19 1</ambient><diffuse>0.22 0.23 0.26 1</diffuse></material></visual>
+      <visual name="pg1_5"><pose>-0.275 0.085 0.04 0 0 5.4978</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.16 0.17 0.19 1</ambient><diffuse>0.22 0.23 0.26 1</diffuse></material></visual>
+      <visual name="pg1_6"><pose>-0.180 0.045 0.04 0 0 0.0000</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.16 0.17 0.19 1</ambient><diffuse>0.22 0.23 0.26 1</diffuse></material></visual>
+      <visual name="pg1_7"><pose>-0.085 0.085 0.04 0 0 0.7854</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.16 0.17 0.19 1</ambient><diffuse>0.22 0.23 0.26 1</diffuse></material></visual>
+
+      <!-- Rear-Right Guard (rotor_3: -0.18, -0.18) -->
+      <visual name="pg3_0"><pose>-0.045 -0.180 0.04 0 0 1.5708</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.16 0.17 0.19 1</ambient><diffuse>0.22 0.23 0.26 1</diffuse></material></visual>
+      <visual name="pg3_1"><pose>-0.085 -0.085 0.04 0 0 2.3562</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.16 0.17 0.19 1</ambient><diffuse>0.22 0.23 0.26 1</diffuse></material></visual>
+      <visual name="pg3_2"><pose>-0.180 -0.045 0.04 0 0 3.1416</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.16 0.17 0.19 1</ambient><diffuse>0.22 0.23 0.26 1</diffuse></material></visual>
+      <visual name="pg3_3"><pose>-0.275 -0.085 0.04 0 0 3.9270</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.16 0.17 0.19 1</ambient><diffuse>0.22 0.23 0.26 1</diffuse></material></visual>
+      <visual name="pg3_4"><pose>-0.315 -0.180 0.04 0 0 4.7124</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.16 0.17 0.19 1</ambient><diffuse>0.22 0.23 0.26 1</diffuse></material></visual>
+      <visual name="pg3_5"><pose>-0.275 -0.275 0.04 0 0 5.4978</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.16 0.17 0.19 1</ambient><diffuse>0.22 0.23 0.26 1</diffuse></material></visual>
+      <visual name="pg3_6"><pose>-0.180 -0.315 0.04 0 0 0.0000</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.16 0.17 0.19 1</ambient><diffuse>0.22 0.23 0.26 1</diffuse></material></visual>
+      <visual name="pg3_7"><pose>-0.085 -0.275 0.04 0 0 0.7854</pose><geometry><box><size>0.112 0.012 0.025</size></box></geometry><material><ambient>0.16 0.17 0.19 1</ambient><diffuse>0.22 0.23 0.26 1</diffuse></material></visual>
+
+      <!-- Dedicated Pilot FPV Navigation Camera (C07) -->
+      <sensor name="fpv_camera" type="camera">
+        <pose>0.145 0 0.015 0 0.12 0</pose>
+        <camera>
+          <horizontal_fov>1.45</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>360</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>20</update_rate>
+        <visualize>false</visualize>
+        <topic>/sar_drone/fpv/image_raw</topic>
+      </sensor>
+    </link>
+
+    <!-- Motorized Pitch Gimbal Link for Bi-Spectral Payload (C02, C08) -->
+    <link name="gimbal_link">
+      <pose>0.14 0 -0.025 0 0 0</pose>
+      <inertial>
+        <mass>0.02</mass>
+        <inertia>
+          <ixx>1e-5</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1e-5</iyy>
+          <iyz>0</iyz>
+          <izz>1e-5</izz>
+        </inertia>
+      </inertial>
+
       <visual name="gimbal_visual">
-        <pose>0.14 0 -0.025 0 0.48 0</pose>
+        <pose>0 0 0 0 0 0</pose>
         <geometry>
           <box>
             <size>0.045 0.065 0.035</size>
@@ -215,9 +319,9 @@
         </material>
       </visual>
 
-      <!-- Thermal camera sensor (angled down 27.5 deg for forward+ground scanning) -->
+      <!-- Thermal camera sensor -->
       <sensor name="thermal_camera" type="thermal">
-        <pose>0.165 0 -0.03 0 0.48 0</pose>
+        <pose>0.025 0 -0.005 0 0 0</pose>
         <camera>
           <horizontal_fov>1.15</horizontal_fov>
           <image>
@@ -241,9 +345,9 @@
         </plugin>
       </sensor>
 
-      <!-- Co-located RGB camera for operator visual reference -->
+      <!-- Co-located RGB camera for observer visual reference -->
       <sensor name="rgb_camera" type="camera">
-        <pose>0.165 0 -0.03 0 0.48 0</pose>
+        <pose>0.025 0 -0.005 0 0 0</pose>
         <camera>
           <horizontal_fov>1.15</horizontal_fov>
           <image>
@@ -262,6 +366,23 @@
         <topic>/sar_drone/rgb/image_raw</topic>
       </sensor>
     </link>
+
+    <joint name="gimbal_pitch_joint" type="revolute">
+      <parent>base_link</parent>
+      <child>gimbal_link</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>0.0</lower>
+          <upper>1.45</upper>
+          <effort>2.0</effort>
+          <velocity>3.0</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.05</damping>
+        </dynamics>
+      </axis>
+    </joint>
 
     <!-- Rotor 0: Front-Right (CCW) -->
     <link name="rotor_0">
@@ -530,6 +651,18 @@
           <direction>-1</direction>
         </rotor>
       </rotorConfiguration>
+    </plugin>
+
+    <!-- Gimbal Pitch Position Controller -->
+    <plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
+      <joint_name>gimbal_pitch_joint</joint_name>
+      <topic>/sar_drone/gimbal/pitch_cmd</topic>
+      <initial_position>0.48</initial_position>
+      <p_gain>1.5</p_gain>
+      <i_gain>0.05</i_gain>
+      <d_gain>0.12</d_gain>
+      <cmd_min>-0.5</cmd_min>
+      <cmd_max>0.5</cmd_max>
     </plugin>
 
     <!-- 3D Odometry Publisher -->
